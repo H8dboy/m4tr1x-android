@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>ad-hoc</string>
+    <!-- Change to "enterprise" if you have Apple Developer Enterprise Program -->
+    <key>teamID</key>
+    <string>INSERISCI_IL_TUO_TEAM_ID</string>
+    <key>compileBitcode</key>
+    <false/>
+    <key>thinning</key>
+    <string>&lt;none&gt;</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.m4tr1x.node</key>
+        <string>M4TR1X Distribution</string>
+    </dict>
+</dict>
+</plist>
