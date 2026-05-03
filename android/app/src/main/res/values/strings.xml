@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">M4TR1X</string>
+    <string name="title_activity_main">M4TR1X</string>
+    <string name="package_name">com.m4tr1x.node</string>
+    <string name="custom_url_scheme">com.m4tr1x.node</string>
+</resources>

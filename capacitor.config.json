@@ -1,0 +1,15 @@
+{
+  "appId": "com.m4tr1x.node",
+  "appName": "M4TR1X",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "server": {
+    "cleartext": true,
+    "allowNavigation": ["*"]
+  }
+}
