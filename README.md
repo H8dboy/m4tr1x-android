@@ -24,7 +24,20 @@ M4TR1X is built on a different architecture. There is no central server, no comp
 
 ---
 
-## What the app includes
+## What the app is
+
+This app does not run a node, does not store your identity and does not hold your keys. It is a **thin bridge to a M4TR1X node** — the Electron desktop app or a headless [m4tr1x-node](https://github.com/H8dboy/m4tr1x-node) on your home network or behind Tor.
+
+Your phone is the screen. Your node is the network.
+
+```
+┌──────────────┐   WiFi / Tor    ┌──────────────────────────┐
+│  Phone app   │ ──────────────► │  Your M4TR1X node        │
+│  (this repo) │   HTTP API      │  identity · relay · H8   │
+└──────────────┘                 └──────────────────────────┘
+```
+
+What it includes:
 
 - **Video feed** — watch videos from nodes you follow
 - **Photo feed** — photo and image posts from the M4TR1X network
@@ -34,7 +47,15 @@ M4TR1X is built on a different architecture. There is no central server, no comp
 - **Tipping** — send H8 tokens to creators directly from your phone
 - **Node selector** — connect to any M4TR1X node, including your own self-hosted node
 
-The app connects to a M4TR1X node. By default it uses public nodes from the network directory. If you run your own node ([m4tr1x-node](https://github.com/H8dboy/m4tr1x-node)) you can point the app directly at it.
+---
+
+## Connecting to your node
+
+1. Open the app — it asks for your node address.
+2. Tap **CERCA NODO SULLA RETE 🔍** to auto-discover nodes on your WiFi — the app scans the common private subnets for a M4TR1X `/health` endpoint and lists every node it finds, one tap to connect. The last working subnet is remembered and scanned first.
+3. Or type the address manually: `http://192.168.1.x:8080` or your `.onion` (Tor).
+
+The choice is remembered; tap ⚡ in the top bar to switch node.
 
 ---
 
@@ -59,6 +80,19 @@ iOS does not allow direct APK installation. Options:
 Instructions: [`docs/IOS_INSTALL.md`](docs/IOS_INSTALL.md)
 
 **Minimum iOS version:** iOS 14
+
+---
+
+## Builds from GitHub Actions
+
+Every push builds the apps in CI — no local toolchain needed:
+
+| Platform | Workflow | Output |
+|----------|----------|--------|
+| Android | `build-android.yml` | APK artifact on every push; GitHub Release on `v*` tags |
+| iOS | `build-ios.yml` | IPA via enterprise/sideload signing |
+
+Android signing uses the repo secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`; without them the APK is debug-signed (still installable). iOS uses `APPLE_CERTIFICATE_BASE64`, `APPLE_CERTIFICATE_PASSWORD`, `APPLE_PROVISIONING_PROFILE_BASE64`, `KEYCHAIN_PASSWORD`.
 
 ---
 

@@ -81,6 +81,14 @@ html,body { height: 100%; background: var(--bg); color: var(--text); font-family
   color: #000; font-size: 1em; font-weight: 700; letter-spacing: 2px; cursor: pointer;
 }
 #setup-screen .hint { font-size: 0.68em; color: rgba(0,255,136,0.4); font-family: var(--mono); letter-spacing: 1px; text-align: center }
+#setup-screen button.ghost { background: none; border: 1px solid rgba(0,255,136,0.35); color: var(--g); font-weight: 400 }
+#setup-screen button:disabled { opacity: 0.55 }
+#scan-results { width: 100%; display: flex; flex-direction: column; gap: 8px }
+#scan-results .scan-hit {
+  width: 100%; padding: 12px 14px; background: var(--bg3); border: 1px solid var(--g);
+  border-radius: 10px; color: var(--g); font-family: var(--mono); font-size: 0.85em;
+  letter-spacing: 1px; cursor: pointer; text-align: left;
+}
 
 /* ── Stories ── */
 #stories-bar {
@@ -304,6 +312,8 @@ video.film-vid { width: 100%; height: 100%; object-fit: contain }
   <input id="node-url-input" type="url" placeholder="http://192.168.1.x:8080" autocomplete="off" autocorrect="off" spellcheck="false">
   <div class="hint">IP locale (WiFi) · o indirizzo .onion (Tor)</div>
   <button onclick="connectNode()">CONNETTI →</button>
+  <button id="scan-btn" class="ghost" onclick="scanForNodes()">CERCA NODO SULLA RETE 🔍</button>
+  <div id="scan-results"></div>
   <div class="hint" id="connect-err" style="color:#ff003c;display:none"></div>
 </div>
 
@@ -504,6 +514,8 @@ async function connectNode() {
     if (r.status !== 'online') throw new Error('Node offline');
     NODE = url;
     localStorage.setItem('m4tr1x_node', NODE);
+    const subnet = url.match(/(\d+\.\d+\.\d+)\.\d+/);
+    if (subnet) localStorage.setItem('m4tr1x_last_subnet', subnet[1]);
     launchApp();
   } catch(e) {
     err.textContent = 'Nodo non raggiungibile: ' + e.message;
@@ -517,6 +529,71 @@ function resetNode() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('setup-screen').style.display = 'flex';
   document.getElementById('node-url-input').value = '';
+}
+
+// ── Auto-discovery: scansiona la rete locale cercando nodi M4TR1X ────────────
+// Sottoreti private più comuni; quella dell'ultimo nodo usato ha priorità.
+const SCAN_SUBNETS = ['192.168.1', '192.168.0', '192.168.56', '192.168.178', '10.0.0', '10.0.1'];
+
+async function probeNode(url) {
+  try {
+    const r = await fetch(url + '/health', { signal: AbortSignal.timeout(1500) }).then(r => r.json());
+    return r.status === 'online' ? url : null;
+  } catch { return null; }
+}
+
+let _scanning = false;
+async function scanForNodes() {
+  if (_scanning) return;
+  _scanning = true;
+  const btn  = document.getElementById('scan-btn');
+  const list = document.getElementById('scan-results');
+  const err  = document.getElementById('connect-err');
+  err.style.display = 'none';
+  btn.disabled = true;
+  list.innerHTML = '';
+
+  const subnets = [...SCAN_SUBNETS];
+  const last = localStorage.getItem('m4tr1x_last_subnet');
+  if (last && subnets.includes(last)) subnets.splice(subnets.indexOf(last), 1);
+  if (last) subnets.unshift(last);
+
+  const found = [];
+  const addHit = url => {
+    found.push(url);
+    const el = document.createElement('button');
+    el.className = 'scan-hit';
+    el.textContent = '⚡ ' + url.replace(/^http:\/\//, '');
+    el.onclick = () => {
+      document.getElementById('node-url-input').value = url;
+      localStorage.setItem('m4tr1x_last_subnet', url.match(/(\d+\.\d+\.\d+)\.\d+/)[1]);
+      connectNode();
+    };
+    list.appendChild(el);
+  };
+
+  const BATCH = 48;
+  outer:
+  for (let s = 0; s < subnets.length; s++) {
+    const targets = [];
+    for (let i = 1; i <= 254; i++) targets.push(`http://${subnets[s]}.${i}:8080`);
+    for (let i = 0; i < targets.length; i += BATCH) {
+      const done = (s * 254 + i) / (subnets.length * 254);
+      btn.textContent = `SCANSIONE ${subnets[s]}.x — ${Math.round(done * 100)}%`;
+      const hits = (await Promise.all(targets.slice(i, i + BATCH).map(probeNode))).filter(Boolean);
+      hits.forEach(addHit);
+    }
+    // Trovati nodi in questa sottorete: è la rete giusta, inutile scansionare le altre
+    if (found.length) break outer;
+  }
+
+  btn.textContent = found.length ? 'CERCA ANCORA 🔍' : 'CERCA NODO SULLA RETE 🔍';
+  btn.disabled = false;
+  _scanning = false;
+  if (!found.length) {
+    err.textContent = 'Nessun nodo trovato — controlla di essere sul WiFi di casa o inserisci l\'IP a mano';
+    err.style.display = 'block';
+  }
 }
 
 function openDesktop(sec) {
