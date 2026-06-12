@@ -64,13 +64,17 @@ jobs:
             cp android/app/build/outputs/apk/debug/app-debug.apk M4TR1X.apk
           fi
           "$BUILD_TOOLS/apksigner" verify M4TR1X.apk
+          sha256sum M4TR1X.apk > checksums-android.txt
+          cat checksums-android.txt
           echo "APK pronto: $(du -h M4TR1X.apk | cut -f1)"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: M4TR1X-android
-          path: M4TR1X.apk
+          path: |
+            M4TR1X.apk
+            checksums-android.txt
           retention-days: 30
 
       # Sui tag v* pubblica l'APK come Release scaricabile da chiunque
@@ -78,5 +82,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: M4TR1X.apk
+          files: |
+            M4TR1X.apk
+            checksums-android.txt
           generate_release_notes: true
