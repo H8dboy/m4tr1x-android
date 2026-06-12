@@ -6,6 +6,9 @@ on:
     tags: ['v*']
   workflow_dispatch:
 
+permissions:
+  contents: write   # per pubblicare l'APK nelle Release
+
 jobs:
   build-android:
     runs-on: ubuntu-latest
