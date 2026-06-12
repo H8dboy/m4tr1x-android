@@ -974,7 +974,6 @@ function pmPickFile(input) {
 
 async function doPost() {
   if (!_pmFile) { toast('Seleziona un\'immagine'); return; }
-  if (isOnion(NODE)) { toast('🧅 Upload via Tor non ancora supportato — connettiti al nodo via WiFi'); return; }
   const pub = document.getElementById('pm-publish');
   const prog = document.getElementById('pm-prog');
   const fill = document.getElementById('pm-prog-fill');
@@ -982,13 +981,36 @@ async function doPost() {
   pub.disabled = true; pub.textContent = 'CARICAMENTO...';
   prog.style.display = 'block'; fill.style.width = '30%'; txt.textContent = 'Upload...';
   try {
-    const fd = new FormData();
-    fd.append('photo', _pmFile);
-    fd.append('caption', document.getElementById('pm-caption').value);
-    fd.append('tags', document.getElementById('pm-tags').value.replace(/#/g,'').trim());
-    fill.style.width = '65%'; txt.textContent = 'Nostr...';
+    const caption = document.getElementById('pm-caption').value;
+    const tags = document.getElementById('pm-tags').value.replace(/#/g,'').trim();
     const ep = _pmMode === 'story' ? '/api/v1/story/publish' : '/api/v1/photo/publish';
-    const res = await fetch(NODE + ep, { method: 'POST', body: fd }).then(r => r.json());
+    fill.style.width = '65%'; txt.textContent = isOnion(NODE) ? 'Upload via Tor 🧅...' : 'Nostr...';
+    let res;
+    if (isOnion(NODE)) {
+      if (!Tor) throw new Error('Questa build non include Tor');
+      // Il WebView non passa i body al nativo: file in base64 → multipart nel plugin
+      const dataB64 = await new Promise((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result.split(',')[1]);
+        fr.onerror = () => reject(new Error('Lettura file fallita'));
+        fr.readAsDataURL(_pmFile);
+      });
+      const r = await Tor.upload({
+        url: NODE + ep,
+        fileField: 'photo',
+        fileName: _pmFile.name || 'photo.jpg',
+        mimeType: _pmFile.type || 'image/jpeg',
+        dataB64,
+        fields: { caption, tags },
+      });
+      res = JSON.parse(r.body || 'null') || {};
+    } else {
+      const fd = new FormData();
+      fd.append('photo', _pmFile);
+      fd.append('caption', caption);
+      fd.append('tags', tags);
+      res = await fetch(NODE + ep, { method: 'POST', body: fd }).then(r => r.json());
+    }
     fill.style.width = '100%';
     if (res.ok) {
       txt.textContent = _pmMode === 'story' ? '✓ Storia pubblicata' : '✓ Foto pubblicata';

@@ -74,6 +74,60 @@ public class TorBridgePlugin extends Plugin {
         }, "tor-request").start();
     }
 
+    /**
+     * Upload multipart/form-data via Tor. Il WebView non passa i body al
+     * nativo, quindi il file arriva in base64 dal JS e il multipart viene
+     * assemblato qui.
+     *
+     * Parametri: url, fileField, fileName, mimeType, dataB64, fields {k:v}
+     */
+    @PluginMethod
+    public void upload(PluginCall call) {
+        final String url = call.getString("url");
+        final String fileField = call.getString("fileField", "file");
+        final String fileName = call.getString("fileName", "upload.bin");
+        final String mimeType = call.getString("mimeType", "application/octet-stream");
+        final String dataB64 = call.getString("dataB64");
+        final JSObject fields = call.getObject("fields", new JSObject());
+        if (url == null || dataB64 == null) { call.reject("url o dataB64 mancante"); return; }
+        if (!TorManager.isReady()) { call.reject("Tor non pronto"); return; }
+
+        new Thread(() -> {
+            try {
+                byte[] fileBytes = android.util.Base64.decode(dataB64, android.util.Base64.DEFAULT);
+                String boundary = "----M4TR1X" + Long.toHexString(System.currentTimeMillis());
+
+                java.io.ByteArrayOutputStream body = new java.io.ByteArrayOutputStream();
+                java.util.Iterator<String> keys = fields.keys();
+                while (keys.hasNext()) {
+                    String k = keys.next();
+                    String v = fields.getString(k);
+                    if (v == null) continue;
+                    body.write(("--" + boundary + "\r\n"
+                            + "Content-Disposition: form-data; name=\"" + k + "\"\r\n\r\n"
+                            + v + "\r\n").getBytes(StandardCharsets.UTF_8));
+                }
+                body.write(("--" + boundary + "\r\n"
+                        + "Content-Disposition: form-data; name=\"" + fileField
+                        + "\"; filename=\"" + fileName.replace("\"", "") + "\"\r\n"
+                        + "Content-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+                body.write(fileBytes);
+                body.write(("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));
+
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "multipart/form-data; boundary=" + boundary);
+                TorHttp.Response r = TorHttp.request("POST", url, headers, body.toByteArray(), 180000);
+                String text = TorHttp.readBody(r, MAX_RESPONSE);
+                JSObject ret = new JSObject();
+                ret.put("status", r.status);
+                ret.put("body", text);
+                call.resolve(ret);
+            } catch (Exception e) {
+                call.reject("Upload Tor fallito: " + e.getMessage());
+            }
+        }, "tor-upload").start();
+    }
+
     private JSObject statusObj() {
         JSObject o = new JSObject();
         o.put("running", TorManager.isRunning());
