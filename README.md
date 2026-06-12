@@ -59,6 +59,28 @@ The choice is remembered; tap ⚡ in the top bar to switch node.
 
 ---
 
+## Native Tor (Android)
+
+The Android build **embeds Tor** (Guardian Project `tor-android` binary) — no
+Orbot, no external apps. Enter a `.onion` node address and the app boots its
+own Tor daemon (bootstrap progress shown live), then routes traffic through it:
+
+- **GET requests — API, photos, HLS video, stories** — are transparently
+  intercepted at the WebView level (`OnionWebViewClient`) and tunneled
+  through Tor's SOCKS5. The web layer doesn't know Tor exists.
+- **POST requests** go through the `TorBridge` Capacitor plugin (WebViews
+  don't expose request bodies to native interceptors).
+- DNS for `.onion` never leaves the tunnel — hostnames are resolved by Tor
+  itself (SOCKS5 ATYP=domain).
+- Tor runs as a child process on port 39050 (no clash with Orbot) and dies
+  with the app — zero background battery drain.
+- The connection dot in the top bar turns **purple 🧅** when you're on Tor.
+
+Current limit: media uploads over Tor are not yet supported — post from your
+home WiFi, browse from anywhere. iOS Tor (Tor.framework) is on the roadmap.
+
+---
+
 ## Install — Android
 
 1. Download the latest APK from [Releases](https://github.com/H8dboy/m4tr1x-android/releases/latest)

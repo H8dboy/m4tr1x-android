@@ -501,7 +501,41 @@ function toast(msg, dur = 2800) {
   t.textContent = msg; t.classList.add('show');
   clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), dur);
 }
-function api(path, opts) { return fetch(NODE + path, opts).then(r => r.json()); }
+// ── Tor embedded (plugin nativo TorBridge, solo build Android) ────────────────
+const Tor = (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.TorBridge) || null;
+function isOnion(u) { try { return new URL(u).hostname.endsWith('.onion'); } catch { return false; } }
+
+async function ensureTor(onProgress) {
+  if (!Tor) throw new Error('Questa build non include Tor');
+  let st = await Tor.status();
+  if (!st.running) st = await Tor.start();
+  const deadline = Date.now() + 120000;
+  while (Date.now() < deadline) {
+    st = await Tor.status();
+    if (!st.running) throw new Error('Tor si è fermato');
+    if (onProgress) onProgress(st.bootstrap);
+    if (st.ready) return;
+    await new Promise(r => setTimeout(r, 700));
+  }
+  throw new Error('Timeout bootstrap Tor (rete lenta?)');
+}
+
+// Le GET verso .onion passano da Tor via intercettazione nativa del WebView.
+// I POST devono passare dal plugin: il WebView non espone il body al nativo.
+async function api(path, opts) {
+  opts = opts || {};
+  const method = (opts.method || 'GET').toUpperCase();
+  if (Tor && isOnion(NODE) && method !== 'GET' && !(opts.body instanceof FormData)) {
+    const r = await Tor.request({
+      url: NODE + path,
+      method,
+      body: typeof opts.body === 'string' ? opts.body : (opts.body ? JSON.stringify(opts.body) : null),
+      contentType: (opts.headers && opts.headers['Content-Type']) || 'application/json',
+    });
+    return JSON.parse(r.body || 'null');
+  }
+  return fetch(NODE + path, opts).then(r => r.json());
+}
 
 // ── Node connection ──────────────────────────────────────────────────────────
 async function connectNode() {
@@ -510,7 +544,12 @@ async function connectNode() {
   err.style.display = 'none';
   if (!url) { err.textContent = 'Inserisci un URL'; err.style.display = 'block'; return; }
   try {
-    const r = await fetch(url + '/health', { signal: AbortSignal.timeout(6000) }).then(r => r.json());
+    const cbtn = document.querySelector('#setup-screen button:not(.ghost)');
+    if (isOnion(url)) {
+      await ensureTor(p => { cbtn.textContent = `TOR BOOTSTRAP ${p}% 🧅`; });
+      cbtn.textContent = 'CONNETTI →';
+    }
+    const r = await fetch(url + '/health', { signal: AbortSignal.timeout(isOnion(url) ? 45000 : 6000) }).then(r => r.json());
     if (r.status !== 'online') throw new Error('Node offline');
     NODE = url;
     localStorage.setItem('m4tr1x_node', NODE);
@@ -603,6 +642,13 @@ function openDesktop(sec) {
 function launchApp() {
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
+  // Indicatore connessione: verde = LAN, viola 🧅 = via Tor
+  const dot = document.getElementById('node-dot');
+  if (isOnion(NODE)) {
+    dot.style.background = '#b14aff';
+    dot.style.boxShadow = '0 0 6px #b14aff';
+    dot.title = 'Connesso via Tor 🧅';
+  }
   loadSignal();
 }
 
@@ -928,6 +974,7 @@ function pmPickFile(input) {
 
 async function doPost() {
   if (!_pmFile) { toast('Seleziona un\'immagine'); return; }
+  if (isOnion(NODE)) { toast('🧅 Upload via Tor non ancora supportato — connettiti al nodo via WiFi'); return; }
   const pub = document.getElementById('pm-publish');
   const prog = document.getElementById('pm-prog');
   const fill = document.getElementById('pm-prog-fill');
@@ -965,10 +1012,13 @@ async function doPost() {
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 if (NODE) {
-  fetch(NODE + '/health', { signal: AbortSignal.timeout(4000) })
-    .then(r => r.json())
-    .then(r => { if (r.status === 'online') launchApp(); else resetNode(); })
-    .catch(() => { toast('Nodo non raggiungibile'); resetNode(); });
+  (async () => {
+    try {
+      if (isOnion(NODE)) await ensureTor(p => toast(`Tor bootstrap ${p}% 🧅`, 900));
+      const r = await fetch(NODE + '/health', { signal: AbortSignal.timeout(isOnion(NODE) ? 45000 : 4000) }).then(r => r.json());
+      if (r.status === 'online') launchApp(); else resetNode();
+    } catch(e) { toast('Nodo non raggiungibile'); resetNode(); }
+  })();
 } else {
   document.getElementById('setup-screen').style.display = 'flex';
   // prefill with common local addresses

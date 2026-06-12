@@ -22,6 +22,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packaging {
+        jniLibs {
+            // Estrae le .so su disco: necessario per eseguire libtor.so come binario
+            useLegacyPackaging = true
+        }
+    }
 }
 
 repositories {
@@ -36,6 +42,8 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-android')
+    // Tor embedded (binario libtor.so, Guardian Project)
+    implementation 'info.guardianproject:tor-android:0.4.8.7'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
