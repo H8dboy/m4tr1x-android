@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#080808">
+<meta name="theme-color" content="#080b10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="M4TR1X">
@@ -12,20 +12,21 @@
 <link rel="apple-touch-icon" href="/m/icon-192.png">
 <style>
 :root {
-  --g: #00ff88;
-  --r: #ff003c;
-  --b: #00aaff;
-  --bg: #080808;
-  --bg2: #111;
-  --bg3: #1a1a1a;
-  --text: #fff;
-  --muted: rgba(255,255,255,0.45);
+  /* Visual System v3 — mirrored from node-server (deep "INK" surfaces, warm text) */
+  --g: #00ff88;                       /* SIGNAL green — protagonista */
+  --r: #ff5566;                       /* LIVE/red — più caldo del vecchio #ff003c */
+  --b: #4ca6ff;                       /* FILM blue */
+  --bg: #080b10;                      /* ink */
+  --bg2: #0c1118;                     /* surface */
+  --bg3: #11171f;                     /* surface2 */
+  --text: #e8edf2;                    /* warm off-white (non più #fff puro) */
+  --muted: rgba(232,237,242,0.52);    /* contrasto alzato per leggibilità su ink */
   --border: rgba(255,255,255,0.08);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bot: env(safe-area-inset-bottom, 0px);
   --nav-h: calc(60px + var(--safe-bot));
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --mono: 'SF Mono', 'Fira Mono', monospace;
+  --font: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', 'Fira Mono', ui-monospace, monospace;
 }
 *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent }
 html,body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden }
