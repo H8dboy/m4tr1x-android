@@ -4,6 +4,9 @@
 
 **M4TR1X for Android and iOS — built with Capacitor. Not on any app store.**
 
+🌐 **Official site & downloads — [nderja.com](https://nderja.com)**
+_M4TR1X is distributed only from nderja.com._
+
 </div>
 
 ---
@@ -12,7 +15,7 @@
 
 Apple and Google operate the two dominant mobile app stores. Both are subject to the laws of the jurisdictions where they operate — including EU requirements for age verification, content moderation, and platform compliance. An app distributed through those stores can be removed, restricted, or required to implement identity checks at any time.
 
-m4tr1x-android is distributed directly — as an APK for Android and a sideloaded build for iOS — because the network it connects to has no central point of compliance, and its distribution reflects the same principle.
+m4tr1x-android is distributed directly — as an APK for Android and a sideloaded build for iOS — because the network it connects to has no central point of compliance, and its distribution reflects the same principle. The official build is published only at **[nderja.com](https://nderja.com)**; treat APKs from anywhere else as untrusted.
 
 ---
 

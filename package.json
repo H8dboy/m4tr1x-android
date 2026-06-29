@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "H8db0y (https://nderja.com)",
   "license": "ISC",
   "description": "",
   "dependencies": {
@@ -14,5 +14,6 @@
     "@capacitor/cli": "^8.3.1",
     "@capacitor/core": "^8.3.1",
     "@capacitor/ios": "^8.3.1"
-  }
+  },
+  "homepage": "https://nderja.com"
 }
