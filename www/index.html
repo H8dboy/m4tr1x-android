@@ -341,13 +341,13 @@ video.film-vid { width: 100%; height: 100%; object-fit: contain }
 
     <!-- FILM -->
     <div class="section" id="sec-film">
-      <div class="sec-header"><h1>🎬 FILM</h1></div>
+      <div class="sec-header"><h1><svg viewBox="0 0 24 24" width="20" height="20" style="vertical-align:-2px;margin-right:6px" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>FILM</h1></div>
       <div id="film-list"><div class="spinner"></div></div>
     </div>
 
     <!-- MUSIC -->
     <div class="section" id="sec-music">
-      <div class="sec-header"><h1>🎵 MUSIC</h1></div>
+      <div class="sec-header"><h1><svg viewBox="0 0 24 24" width="20" height="20" style="vertical-align:-2px;margin-right:6px" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>MUSIC</h1></div>
       <div id="music-list"><div class="spinner"></div></div>
       <div id="mini-player">
         <span class="mp-note">♪</span>
@@ -360,7 +360,7 @@ video.film-vid { width: 100%; height: 100%; object-fit: contain }
     <!-- FORUM -->
     <div class="section" id="sec-forum">
       <div class="sec-placeholder">
-        <div class="sec-icon">🏛️</div>
+        <div class="sec-icon"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 10l8-5 8 5M5 10v11M19 10v11M9 21v-7M15 21v-7"/></svg></div>
         <h2>FORUM</h2>
         <p>Accedi al forum completo dall'app desktop M4TR1X.</p>
         <a id="forum-link" href="#" onclick="openDesktop('forum')">Apri nel browser →</a>
@@ -370,7 +370,7 @@ video.film-vid { width: 100%; height: 100%; object-fit: contain }
     <!-- DM -->
     <div class="section" id="sec-dm">
       <div class="sec-placeholder">
-        <div class="sec-icon">💬</div>
+        <div class="sec-icon"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg></div>
         <h2>MESSAGGI</h2>
         <p>I messaggi cifrati E2E sono disponibili dall'app desktop.</p>
         <a id="dm-link" href="#" onclick="openDesktop('dm')">Apri nel browser →</a>
@@ -379,11 +379,11 @@ video.film-vid { width: 100%; height: 100%; object-fit: contain }
   </div>
 
   <div id="bottom-nav">
-    <button class="bnav active" id="bnav-signal" onclick="goSec('signal')"><span class="bi">📡</span><span class="bl">SIGNAL</span></button>
-    <button class="bnav" id="bnav-film" onclick="goSec('film')"><span class="bi">🎬</span><span class="bl">FILM</span></button>
+    <button class="bnav active" id="bnav-signal" onclick="goSec('signal')"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 6.3a8 8 0 0 1 0 11.4M9.2 9.2a4 4 0 0 0 0 5.6M14.8 9.2a4 4 0 0 1 0 5.6"/></svg></span><span class="bl">SIGNAL</span></button>
+    <button class="bnav" id="bnav-film" onclick="goSec('film')"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></span><span class="bl">FILM</span></button>
     <button class="bnav-post" onclick="openPostModal()">＋</button>
-    <button class="bnav" id="bnav-music" onclick="goSec('music')"><span class="bi">🎵</span><span class="bl">MUSIC</span></button>
-    <button class="bnav" id="bnav-dm" onclick="goSec('dm')"><span class="bi">💬</span><span class="bl">DM</span></button>
+    <button class="bnav" id="bnav-music" onclick="goSec('music')"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span><span class="bl">MUSIC</span></button>
+    <button class="bnav" id="bnav-dm" onclick="goSec('dm')"><span class="bi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg></span><span class="bl">DM</span></button>
   </div>
 </div>
 
@@ -429,7 +429,7 @@ video.film-vid { width: 100%; height: 100%; object-fit: contain }
   <div id="sv-header">
     <div id="sv-bars"></div>
     <div id="sv-info">
-      <div class="sv-av" id="sv-av"><span>👤</span></div>
+      <div class="sv-av" id="sv-av"><span><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span></div>
       <div><div class="sv-name" id="sv-name">—</div><div class="sv-time" id="sv-time">—</div></div>
       <button id="sv-close" onclick="closeStoryViewer()">✕</button>
     </div>
@@ -735,7 +735,7 @@ function makePostCard(p) {
     </div>` : '';
   el.innerHTML = `
     <div class="post-header">
-      <div class="post-av">📡</div>
+      <div class="post-av"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
       <div class="post-meta">
         <div class="post-name">nodo · ${NODE.split('//')[1]?.split(':')[0]||'local'}</div>
         <div class="post-time">${ago(p.created_at)}</div>
@@ -747,7 +747,7 @@ function makePostCard(p) {
     </div>
     <div class="post-actions">
       <div class="pact" onclick="likePost(this)"><span class="icon">🤍</span><span class="cnt">${p.likes||0}</span></div>
-      <div class="pact"><span class="icon">💬</span><span class="cnt">0</span></div>
+      <div class="pact"><span class="icon"><svg viewBox="0 0 24 24" width="17" height="17" style="vertical-align:-3px" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/></svg></span><span class="cnt">0</span></div>
       <div class="pact" onclick="sharePost('${p.id}')"><span class="icon">↗</span><span class="cnt"></span></div>
     </div>
     ${p.caption ? `<div class="post-caption">${esc(p.caption)}</div>` : ''}
