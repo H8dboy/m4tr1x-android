@@ -11,6 +11,16 @@
 <link rel="manifest" href="/m/manifest.json">
 <link rel="apple-touch-icon" href="/m/icon-192.png">
 <style>
+/* Font IBM Plex LOCALI (privacy-first: nessuna richiesta a Google/CDN — regola 0).
+   I .woff2 stanno in ./fonts/ e vengono impacchettati nell'APK con `cap copy`. */
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:local('IBM Plex Mono'),url('fonts/IBMPlexMono-Regular.woff2') format('woff2');}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:local('IBM Plex Mono'),url('fonts/IBMPlexMono-Medium.woff2') format('woff2');}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:local('IBM Plex Mono'),url('fonts/IBMPlexMono-SemiBold.woff2') format('woff2');}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:700;font-display:swap;src:local('IBM Plex Mono'),url('fonts/IBMPlexMono-Bold.woff2') format('woff2');}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:400;font-display:swap;src:local('IBM Plex Sans'),url('fonts/IBMPlexSans-Regular.woff2') format('woff2');}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:500;font-display:swap;src:local('IBM Plex Sans'),url('fonts/IBMPlexSans-Medium.woff2') format('woff2');}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:600;font-display:swap;src:local('IBM Plex Sans'),url('fonts/IBMPlexSans-SemiBold.woff2') format('woff2');}
+@font-face{font-family:'IBM Plex Sans';font-style:normal;font-weight:700;font-display:swap;src:local('IBM Plex Sans'),url('fonts/IBMPlexSans-Bold.woff2') format('woff2');}
 :root {
   /* Visual System v3 — mirrored from node-server (deep "INK" surfaces, warm text) */
   --g: #00ff88;                       /* SIGNAL green — protagonista */
